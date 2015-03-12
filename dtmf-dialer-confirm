@@ -1,5 +1,5 @@
 #!/bin/sh
 
-if zenity --question --text="Dial $1?" --icon-name=phone ; then
-  exec dtmf-dialer "$1"
+if number=$(zenity --entry --title="Dial number" --text="Dial number:" --entry-text="$1") ; then
+  exec dtmf-dialer "$number"
 fi

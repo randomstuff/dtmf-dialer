@@ -30,35 +30,35 @@ EOF
 dial_number() {
     d="$1"
     case "$d" in
-	1 | 2 | 3 | A | a)
-	    f1=697
-	    ;;
-	4 | 5 | 6 | B | b)
-	    f1=770
-	    ;;
-	7 | 8 | 9 | C | c)
-	    f1=852
-	    ;;
-	'*' | 0 | '#' | D | d)
-	    f1=941
-	    ;;
+      1 | 2 | 3 | A | a)
+        f1=697
+        ;;
+      4 | 5 | 6 | B | b)
+        f1=770
+        ;;
+      7 | 8 | 9 | C | c)
+        f1=852
+        ;;
+      '*' | 0 | '#' | D | d)
+        f1=941
+        ;;
     esac
     case "$d" in
-	1 | 4 | 7 | '*')
-	    f2=1209
-	    ;;
-	2 | 5 | 8 | 0)
-	    f2=1336
-	    ;;
-	3 | 6 | 9 | '#')
-	    f2=1477
-	    ;;
-	A | a | B | b | C | c | D | d)
-	    f2=1633
-	    ;;
+      1 | 4 | 7 | '*')
+        f2=1209
+        ;;
+      2 | 5 | 8 | 0)
+        f2=1336
+        ;;
+      3 | 6 | 9 | '#')
+        f2=1477
+        ;;
+      A | a | B | b | C | c | D | d)
+        f2=1633
+        ;;
     esac
     play -n synth 0.1 sin $f2 sin $f1 gain -10 remix -
-    sleep 0.02    
+    sleep 0.02
 }
 
 dial_numbers() {
@@ -66,31 +66,31 @@ dial_numbers() {
     tel="$1"
     i=0
     while (( i<${#tel} )) ; do
-	d=${tel:$i:1}
-	case "$d" in
-	    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | a | b | c | d | A | B | C | D)
-		dial_number "$d"
-		;;
-	esac
-	(( i=$i+1 ))
+      d=${tel:$i:1}
+      case "$d" in
+        0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | a | b | c | d | A | B | C | D)
+          dial_number "$d"
+          ;;
+      esac
+      (( i=$i+1 ))
     done
 }
 
 dial_prefixed() {
     a=$1
     if $confirm ; then
-	a=$(ask_number "$1") || return
+      a=$(ask_number "$1") || return
     fi
     case "$a" in
     +"$national_cc"*)
-	dial_numbers "$national_prefix$(echo "$a" | sed s/^+$national_cc//)"
-	;;
+      dial_numbers "$national_prefix$(echo "$a" | sed s/^+$national_cc//)"
+      ;;
     +*)
-	dial_numbers "$international_prefix$(echo "$a" | sed s/^+//)"
-	;;
+      dial_numbers "$international_prefix$(echo "$a" | sed s/^+//)"
+      ;;
     *)
-	dial_numbers "$a"
-	;;
+      dial_numbers "$a"
+      ;;
     esac
 }
 
@@ -106,26 +106,26 @@ dial_tel_uri() {
 
 for a in "$@"; do
     case "$a" in
-	--about | --help)
-	    dial_about
-	    exit 0
-	    ;;
-	--confirm)
-	    confirm=true
-	    ;;
-	--ask)
-	    number=$(ask_number) || continue
-	    dial_tel_uri "$number"
-	    ;;
-	-* | --*)
-	    echo "Unrecognised option" >&2
-	    exit 1
-	    ;;
-	tel:*)
-	    dial_tel_uri "$a"
-	    ;;
-	*)
-	    dial_prefixed "$a"
-	    ;;
+      --about | --help)
+        dial_about
+        exit 0
+        ;;
+      --confirm)
+        confirm=true
+        ;;
+      --ask)
+        number=$(ask_number) || continue
+        dial_tel_uri "$number"
+        ;;
+      -* | --*)
+        echo "Unrecognised option" >&2
+        exit 1
+        ;;
+      tel:*)
+        dial_tel_uri "$a"
+        ;;
+      *)
+        dial_prefixed "$a"
+        ;;
     esac
 done

@@ -35,7 +35,9 @@ DURATION = 0.2
 GAP = 0.1
 
 def createSample(f1,f2):
-    return ''.join([chr(int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0)) for n in xrange(int(RATE*DURATION))])
+    return ''.join([
+        chr(int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0))
+        for n in xrange(int(RATE*DURATION))])
 
 silence = ''.join([chr(128) for n in xrange(int(RATE*GAP))])
 
@@ -78,7 +80,7 @@ def dialNumber(number):
         if sample:
             stream.write(sample)
             stream.write(silence)
-    stream.write(silence)    
+    stream.write(silence)
     stream.stop_stream()
     stream.close()
     p.terminate()

@@ -1,0 +1,86 @@
+#!/usr/bin/python
+
+# The MIT License (MIT)
+#
+# Copyright (c) 2015 Gabriel Corona
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+
+from pyaudio import PyAudio
+from math import cos, sin, pi
+from sys import argv
+
+from threading import Thread
+from multiprocessing import Process
+
+RATE = 16000
+DURATION = 0.2
+GAP = 0.1
+
+def createSample(f1,f2):
+    return ''.join([chr(int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0)) for n in xrange(int(RATE*DURATION))])
+
+silence = ''.join([chr(128) for n in xrange(int(RATE*GAP))])
+
+samples = {}
+
+samples['1'] = createSample(697.0, 1209.0)
+samples['2'] = createSample(697.0, 1336.0)
+samples['3'] = createSample(697.0, 1477.0)
+samples['A'] = createSample(697.0, 1633.0)
+samples['a'] = samples['A']
+
+samples['4'] = createSample(770.0, 1209.0)
+samples['5'] = createSample(770.0, 1336.0)
+samples['6'] = createSample(770.0, 1477.0)
+samples['B'] = createSample(770.0, 1633.0)
+samples['b'] = samples['B']
+
+samples['7'] = createSample(852.0, 1209.0)
+samples['8'] = createSample(852.0, 1336.0)
+samples['9'] = createSample(852.0, 1477.0)
+samples['C'] = createSample(852.0, 1633.0)
+samples['c'] = samples['C']
+
+samples['*'] = createSample(941.0, 1209.0)
+samples['0'] = createSample(941.0, 1336.0)
+samples['#'] = createSample(941.0, 1477.0)
+samples['D'] = createSample(941.0, 1633.0)
+samples['d'] = samples['D']
+
+
+def dialNumber(number):
+    WAVE = 1000
+    p = PyAudio()
+    stream = p.open(format = p.get_format_from_width(1),
+                    channels = 1,
+                    rate = RATE,
+                    output = True)
+    for a in number:
+        sample = samples.get(a, None)
+        if sample:
+            stream.write(sample)
+            stream.write(silence)
+    stream.write(silence)    
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+dialNumber(argv[1])

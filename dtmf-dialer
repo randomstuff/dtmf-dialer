@@ -35,11 +35,11 @@ DURATION = 0.2
 GAP = 0.1
 
 def createSample(f1,f2):
-    return ''.join([
-        chr(int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0))
-        for n in xrange(int(RATE*DURATION))])
+    return bytes([
+        int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0)
+        for n in range(int(RATE*DURATION))])
 
-silence = ''.join([chr(128) for n in xrange(int(RATE*GAP))])
+silence = bytes([128 for n in range(int(RATE*GAP))])
 
 samples = {}
 

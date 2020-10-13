@@ -27,9 +27,6 @@ from pyaudio import PyAudio
 from math import cos, sin, pi
 from sys import argv
 
-from threading import Thread
-from multiprocessing import Process
-
 RATE = 16000
 DURATION = 0.2
 GAP = 0.1

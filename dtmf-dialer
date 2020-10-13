@@ -77,7 +77,8 @@ def dialNumber(number):
         if sample:
             stream.write(sample)
             stream.write(silence)
-    stream.write(silence)
+    for i in range(5):
+        stream.write(silence)
     stream.stop_stream()
     stream.close()
     p.terminate()

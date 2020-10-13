@@ -31,47 +31,57 @@ RATE = 16000
 DURATION = 0.2
 GAP = 0.1
 
-def createSample(f1,f2):
-    return bytes([
-        int( (63.0*cos(2*pi*f1*n/RATE) + 63.0*cos(2*pi*f2*n/RATE)) + 128.0)
-        for n in range(int(RATE*DURATION))])
 
-silence = bytes([128 for n in range(int(RATE*GAP))])
+def createSample(f1, f2):
+    return bytes(
+        [
+            int(
+                (
+                    63.0 * cos(2 * pi * f1 * n / RATE)
+                    + 63.0 * cos(2 * pi * f2 * n / RATE)
+                )
+                + 128.0
+            )
+            for n in range(int(RATE * DURATION))
+        ]
+    )
+
+
+silence = bytes([128 for n in range(int(RATE * GAP))])
 
 samples = {}
 
-samples['1'] = createSample(697.0, 1209.0)
-samples['2'] = createSample(697.0, 1336.0)
-samples['3'] = createSample(697.0, 1477.0)
-samples['A'] = createSample(697.0, 1633.0)
-samples['a'] = samples['A']
+samples["1"] = createSample(697.0, 1209.0)
+samples["2"] = createSample(697.0, 1336.0)
+samples["3"] = createSample(697.0, 1477.0)
+samples["A"] = createSample(697.0, 1633.0)
+samples["a"] = samples["A"]
 
-samples['4'] = createSample(770.0, 1209.0)
-samples['5'] = createSample(770.0, 1336.0)
-samples['6'] = createSample(770.0, 1477.0)
-samples['B'] = createSample(770.0, 1633.0)
-samples['b'] = samples['B']
+samples["4"] = createSample(770.0, 1209.0)
+samples["5"] = createSample(770.0, 1336.0)
+samples["6"] = createSample(770.0, 1477.0)
+samples["B"] = createSample(770.0, 1633.0)
+samples["b"] = samples["B"]
 
-samples['7'] = createSample(852.0, 1209.0)
-samples['8'] = createSample(852.0, 1336.0)
-samples['9'] = createSample(852.0, 1477.0)
-samples['C'] = createSample(852.0, 1633.0)
-samples['c'] = samples['C']
+samples["7"] = createSample(852.0, 1209.0)
+samples["8"] = createSample(852.0, 1336.0)
+samples["9"] = createSample(852.0, 1477.0)
+samples["C"] = createSample(852.0, 1633.0)
+samples["c"] = samples["C"]
 
-samples['*'] = createSample(941.0, 1209.0)
-samples['0'] = createSample(941.0, 1336.0)
-samples['#'] = createSample(941.0, 1477.0)
-samples['D'] = createSample(941.0, 1633.0)
-samples['d'] = samples['D']
+samples["*"] = createSample(941.0, 1209.0)
+samples["0"] = createSample(941.0, 1336.0)
+samples["#"] = createSample(941.0, 1477.0)
+samples["D"] = createSample(941.0, 1633.0)
+samples["d"] = samples["D"]
 
 
 def dialNumber(number):
     WAVE = 1000
     p = PyAudio()
-    stream = p.open(format = p.get_format_from_width(1),
-                    channels = 1,
-                    rate = RATE,
-                    output = True)
+    stream = p.open(
+        format=p.get_format_from_width(1), channels=1, rate=RATE, output=True
+    )
     for a in number:
         sample = samples.get(a, None)
         if sample:
@@ -82,5 +92,6 @@ def dialNumber(number):
     stream.stop_stream()
     stream.close()
     p.terminate()
+
 
 dialNumber(argv[1])
